@@ -421,7 +421,7 @@ body.dark-theme .btn:hover{
   padding: 20px;
   box-shadow: 0 2px 8px rgba(2,6,23,0.06);
 }
-body.dark-theme .about-box{ }
+/* body.dark-theme .about-box{ } */
 
 /* Two-column photo cards layout */
 .two-col {
