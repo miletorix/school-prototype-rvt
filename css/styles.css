@@ -100,7 +100,7 @@ body {
   width: 140px;
   height: 44px;
   background-image:
-    url('/assets/pictures/logo.png');
+    url('../assets/pictures/logo.png');
     background-repeat: no-repeat;
   background-position: center;
   background-size: contain;
