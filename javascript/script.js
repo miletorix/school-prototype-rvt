@@ -14,6 +14,56 @@ document.addEventListener("DOMContentLoaded", () => {
   const cookieConsent = document.getElementById("cookie-consent");
   const cookieAccept = document.getElementById("cookie-accept");
 
+  /* aktīvās izvēlnes izgaismošana navigācijas joslā, pārejot uz saiti */
+  function setActiveNavLink() {
+    const currentPath = window.location.pathname;
+    const currentPathNormalized = currentPath.replace(/\/$/, '') || '/';
+    const navLinks = document.querySelectorAll('.nav-link');
+    
+    // noņemt aktīvo klasi no visām navigācijas saitēm
+    navLinks.forEach(link => link.classList.remove('active'));
+    
+    // atrast un izcelt aktīvo saiti
+    navLinks.forEach(link => {
+      const href = link.getAttribute('href');
+      if (href && href !== '#') {
+        // mainīga vertība, lai rīkojieties ar relatīvajiem ceļiem
+        const linkPath = href.startsWith('./') ? href.substring(2) : href;
+        
+        // pārbaude, vai pašreizējā lapa atbilst šai navigācijas saitei
+        if (currentPathNormalized.includes(linkPath) || 
+            linkPath.includes(currentPathNormalized.replace(/^\//, ''))) {
+          link.classList.add('active');
+        }
+      }
+    });
+    
+    // īpaša rīcība ar izvēlnes augšējām saitēm
+    const dropdownLinks = document.querySelectorAll('.dropdown > .nav-link');
+    dropdownLinks.forEach(dropdownLink => {
+      const dropdown = dropdownLink.closest('.dropdown');
+      const dropdownMenuLinks = dropdown.querySelectorAll('.dropdown-menu a');
+      
+      // Pārbaude, vai kāda izvēlnes saite ir aktīva
+      const hasActiveChild = Array.from(dropdownMenuLinks).some(childLink => {
+        const childHref = childLink.getAttribute('href');
+        if (childHref && childHref !== '#') {
+          const childPath = childHref.startsWith('./') ? childHref.substring(2) : childHref;
+          return currentPathNormalized.includes(childPath) || 
+                 childPath.includes(currentPathNormalized.replace(/^\//, ''));
+        }
+        return false;
+      });
+      
+      if (hasActiveChild) {
+        dropdownLink.classList.add('active');
+      }
+    });
+  }
+  
+  // Iestatīt aktīvu navigācijas saiti lapas ielādes brīdī
+  setActiveNavLink();
+
   /* vietnes tēma */
   const savedTheme = localStorage.getItem("site-theme");
   if (savedTheme === "dark") {
@@ -143,7 +193,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const dots = Array.from(document.querySelectorAll(".dot"));
   let idx = 0;
   let intervalId = null;
-  const INTERVAL = 4000;
+  const INTERVAL = 3000;
 
   function showSlide(i) {
     if (!slides.length) return;
