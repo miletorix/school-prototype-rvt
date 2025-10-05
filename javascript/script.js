@@ -23,6 +23,14 @@ document.addEventListener("DOMContentLoaded", () => {
     // noņemt aktīvo klasi no visām navigācijas saitēm
     navLinks.forEach(link => link.classList.remove('active'));
     
+    // īpaša apstrāde saknes ceļam (/ vai /index.html)
+    const isRootPath = currentPathNormalized === '/' || currentPathNormalized === '/index.html' || currentPathNormalized === '';
+    
+    // Ja esam saknē, neizcelt nevienu saiti
+    if (isRootPath) {
+      return;
+    }
+    
     // atrast un izcelt aktīvo saiti
     navLinks.forEach(link => {
       const href = link.getAttribute('href');
@@ -30,9 +38,14 @@ document.addEventListener("DOMContentLoaded", () => {
         // mainīga vertība, lai rīkojieties ar relatīvajiem ceļiem
         const linkPath = href.startsWith('./') ? href.substring(2) : href;
         
-        // pārbaude, vai pašreizējā lapa atbilst šai navigācijas saitei
-        if (currentPathNormalized.includes(linkPath) || 
-            linkPath.includes(currentPathNormalized.replace(/^\//, ''))) {
+        // precīza pārbaude, vai pašreizējā lapa atbilst šai navigācijas saitei
+        if (linkPath === 'index.html' || linkPath === '') {
+          // Sākumlapa nav aktīva citās lapās
+          return;
+        }
+        
+        // Pārbaude, vai pašreizējais ceļš satur saites ceļu
+        if (currentPathNormalized.includes(linkPath)) {
           link.classList.add('active');
         }
       }
@@ -49,8 +62,7 @@ document.addEventListener("DOMContentLoaded", () => {
         const childHref = childLink.getAttribute('href');
         if (childHref && childHref !== '#') {
           const childPath = childHref.startsWith('./') ? childHref.substring(2) : childHref;
-          return currentPathNormalized.includes(childPath) || 
-                 childPath.includes(currentPathNormalized.replace(/^\//, ''));
+          return currentPathNormalized.includes(childPath);
         }
         return false;
       });
